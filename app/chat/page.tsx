@@ -1,7 +1,7 @@
 'use client'
 
 import type { FormEvent } from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import SettingsModal from '@/components/SettingsModal'
 
@@ -120,7 +120,7 @@ function LogoutButton({ onLogout }: { onLogout: () => void }) {
 function ChatHeader({ onOpenSettings }: { onOpenSettings: () => void }) {
 	return (
 		<div className="flex items-center justify-between">
-			<header className="text-lg font-bold tracking-tight">Your Notion Agent</header>
+			<header className="text-xl md:text-2xl font-bold tracking-tight bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Your Notion Agent</header>
 			<button
 				onClick={onOpenSettings}
 				className="text-lg px-2 py-1 rounded-md hover:bg-gray-100 transition-colors"
@@ -132,6 +132,12 @@ function ChatHeader({ onOpenSettings }: { onOpenSettings: () => void }) {
 }
 
 function MessageList({ messages }: { messages: Message[] }) {
+	const bottomRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+	}, [messages])
+
 	return (
 		<div className="h-[420px] overflow-y-auto p-1 flex flex-col space-y-2.5 bg-gray-50 border border-gray-100 rounded-lg">
 			{messages.map((message) => (
@@ -147,6 +153,7 @@ function MessageList({ messages }: { messages: Message[] }) {
 					<div>{message.text}</div>
 				</article>
 			))}
+			<div ref={bottomRef} />
 		</div>
 	)
 }
@@ -163,7 +170,7 @@ function ChatInput({
 	return (
 		<form className="flex items-center gap-2" onSubmit={onSubmit}>
 			<input
-				className="flex-1 px-3 py-2.5 rounded-lg border border-gray-300 outline-none text-sm focus:ring-2 focus:ring-blue-500"
+				className="flex-1 px-3 py-2.5 rounded-lg border border-gray-300 outline-none text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500"
 				placeholder="Message..."
 				value={value}
 				onChange={(e) => onChange(e.target.value)}
