@@ -1,15 +1,9 @@
 'use client'
 
-import type { FormEvent } from 'react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import ChatBox from '@/components/ChatBox'
 import SettingsModal from '@/components/SettingsModal'
-
-type Message = {
-	id: number
-	role: 'user' | 'bot'
-	text: string
-}
 
 type Settings = {
 	openaiApiKey: string
@@ -17,14 +11,8 @@ type Settings = {
 	notionPageId: string
 }
 
-const seedMessages: Message[] = [
-	{ id: 1, role: 'bot', text: 'Hello! This is your Notion Agent.' },
-]
-
 export default function ChatPage() {
 	const router = useRouter()
-	const [messages, setMessages] = useState<Message[]>(seedMessages)
-	const [input, setInput] = useState('')
 	const [showModal, setShowModal] = useState(false)
 	const [settings, setSettings] = useState<Settings>({
 		openaiApiKey: '',
@@ -39,27 +27,6 @@ export default function ChatPage() {
 			setSettings(parsedSettings)
 		}
 	}, [])
-
-	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		const text = input.trim()
-		if (!text) return
-
-		const userMessage: Message = { id: Date.now(), role: 'user', text }
-		setMessages((prev) => [...prev, userMessage])
-		setInput('')
-
-		setTimeout(() => {
-			setMessages((prev) => [
-				...prev,
-				{
-					id: Date.now(),
-					role: 'bot',
-					text: `봇이 반복합니다: ${text}`,
-				},
-			])
-		}, 300)
-	}
 
 	const handleOpenModal = () => {
 		setShowModal(true)
@@ -84,15 +51,7 @@ export default function ChatPage() {
 		<main className="min-h-screen flex items-center justify-center bg-[#f4f6fb] p-6">
 			<LogoutButton onLogout={handleLogout} />
 
-			<section className="w-full max-w-3xl bg-white rounded-xl shadow-xl flex flex-col gap-3 p-4 border border-gray-200">
-				<ChatHeader onOpenSettings={handleOpenModal} />
-				<MessageList messages={messages} />
-				<ChatInput
-					value={input}
-					onChange={(value) => setInput(value)}
-					onSubmit={handleSubmit}
-				/>
-			</section>
+			<ChatBox onOpenSettings={handleOpenModal} />
 
 			{showModal && (
 				<SettingsModal
@@ -114,74 +73,5 @@ function LogoutButton({ onLogout }: { onLogout: () => void }) {
 		>
 			LOG OUT
 		</button>
-	)
-}
-
-function ChatHeader({ onOpenSettings }: { onOpenSettings: () => void }) {
-	return (
-		<div className="flex items-center justify-between">
-			<header className="text-xl md:text-2xl font-bold tracking-tight bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Your Notion Agent</header>
-			<button
-				onClick={onOpenSettings}
-				className="text-lg px-2 py-1 rounded-md hover:bg-gray-100 transition-colors"
-			>
-				⚙️
-			</button>
-		</div>
-	)
-}
-
-function MessageList({ messages }: { messages: Message[] }) {
-	const bottomRef = useRef<HTMLDivElement>(null)
-
-	useEffect(() => {
-		bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-	}, [messages])
-
-	return (
-		<div className="h-[420px] overflow-y-auto p-1 flex flex-col space-y-2.5 bg-gray-50 border border-gray-100 rounded-lg">
-			{messages.map((message) => (
-				<article
-					key={message.id}
-					className={`max-w-[80%] px-3 py-2.5 rounded-lg leading-relaxed flex flex-col gap-1 break-words text-slate-900 border ${
-						message.role === 'user'
-							? 'self-end bg-sky-100 border-sky-200'
-							: 'self-start bg-gray-100 border-gray-200'
-					}`}
-				>
-					<div className="text-xs text-gray-500">{message.role === 'user' ? 'You' : 'Bot'}</div>
-					<div>{message.text}</div>
-				</article>
-			))}
-			<div ref={bottomRef} />
-		</div>
-	)
-}
-
-function ChatInput({ 
-	value, 
-	onChange, 
-	onSubmit 
-}: { 
-	value: string
-	onChange: (value: string) => void
-	onSubmit: (e: FormEvent<HTMLFormElement>) => void
-}) {
-	return (
-		<form className="flex items-center gap-2" onSubmit={onSubmit}>
-			<input
-				className="flex-1 px-3 py-2.5 rounded-lg border border-gray-300 outline-none text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500"
-				placeholder="Message..."
-				value={value}
-				onChange={(e) => onChange(e.target.value)}
-			/>
-			<button
-				className="px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-				type="submit"
-				disabled={!value.trim()}
-			>
-				send
-			</button>
-		</form>
 	)
 }
