@@ -2,23 +2,29 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Local Setup
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Clone and install dependencies
+   ```bash
+   npm install
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. Edit `.env.local` with the following content:
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:8000
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Start the development server
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+4. Ensure backend is running
+   - Backend must be running on `http://localhost:8000`
 
 ## Learn More
 
