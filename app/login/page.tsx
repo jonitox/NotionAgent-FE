@@ -1,7 +1,7 @@
 'use client';
 
-import LoginPanel from '@/components/LoginPanel';
-import SignupPanel from '@/components/SignupPanel';
+import LoginForm from '@/components/LoginForm';
+import SignupForm from '@/components/SignupForm';
 
 export default function LoginPage() {
   return (
@@ -10,8 +10,8 @@ export default function LoginPage() {
 
       <div className="max-w-2xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <LoginPanel />
-          <SignupPanel />
+          <LoginForm />
+          <SignupForm />
         </div>
       </div>
     </div>
