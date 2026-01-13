@@ -5,6 +5,15 @@ export type ChatResponse = {
   answer: string;
 };
 
+export type ChatMessage = {
+  type: 'user' | 'bot';
+  content: string;
+};
+
+export type ChatHistoryResponse = {
+  messages: ChatMessage[];
+};
+
 /**
  * Auth API Response
  */

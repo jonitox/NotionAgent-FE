@@ -35,8 +35,8 @@ export default function LoginForm() {
 
       router.push("/chat");
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Login failed. Please try again.";
-      setError(errorMessage);
+      console.error('Login error:', err)
+      setError("Login failed. Please check your credentials and try again.");
     } finally {
       setLoading(false);
     }

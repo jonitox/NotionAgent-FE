@@ -3,7 +3,7 @@
 import type { FormEvent } from 'react'
 import { useState, useEffect, useRef } from 'react'
 import { api } from '@/lib/api'
-import type { ChatResponse } from '@/lib/types'
+import type { ChatResponse, ChatHistoryResponse } from '@/lib/types'
 
 type Message = {
 	id: number
@@ -19,6 +19,26 @@ export default function ChatBox({ onOpenSettings }: { onOpenSettings: () => void
 	const [messages, setMessages] = useState<Message[]>(seedMessages)
 	const [input, setInput] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
+
+	useEffect(() => {
+		const fetchChatHistory = async () => {
+			try {
+				const history = await api.get<ChatHistoryResponse>('/api/v1/chat/history?thread_id=1&limit=50')
+				if (history.messages && history.messages.length > 0) {
+					const loadedMessages: Message[] = history.messages.map((msg, index) => ({
+						id: index,
+						role: msg.type,
+						text: msg.content,
+					}))
+					setMessages(loadedMessages)
+				}
+			} catch (err) {
+				console.error('Failed to load chat history', err)
+			}
+		}
+
+		fetchChatHistory()
+	}, [])
 
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -84,8 +104,11 @@ export default function ChatBox({ onOpenSettings }: { onOpenSettings: () => void
 function ChatHeader({ onOpenSettings }: { onOpenSettings: () => void }) {
 	return (
 		<div className="flex items-center justify-between">
-			<header className="text-xl md:text-2xl font-bold tracking-tight bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
-				Your Notion Agent
+			<header className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-2">
+				<span className="text-2xl">🤖</span>
+				<span className="bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+					Your Notion Agent
+				</span>
 			</header>
 			<button
 				onClick={onOpenSettings}

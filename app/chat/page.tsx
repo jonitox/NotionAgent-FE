@@ -91,10 +91,15 @@ export default function ChatPage() {
 	}
 
 	return (
-		<main className="min-h-screen flex items-center justify-center bg-[#f4f6fb] p-6">
+		<main className="min-h-screen flex flex-col items-center justify-center bg-[#f4f6fb] p-6">
 			<LogoutButton onLogout={handleLogout} username={user?.username} loading={logoutLoading} />
 
-			<ChatBox onOpenSettings={handleOpenModal} />
+			<div className="flex flex-col items-center gap-3">
+				<ChatBox onOpenSettings={handleOpenModal} />
+				<p className="text-sm text-gray-500 opacity-60">
+					⚙️ Set up your API keys and Notion Page ID in Settings to enable full functionality
+				</p>
+			</div>
 
 			{showModal && (
 				<SettingsModal
@@ -118,12 +123,12 @@ function LogoutButton({
 	loading?: boolean
 }) {
 	return (
-		<div className="fixed top-6 right-6 flex items-center gap-2 text-sm font-semibold text-gray-700">
-			{username && <span className="no-underline select-none">{username}</span>}
+		<div className="fixed top-6 right-6 flex items-center gap-3 text-gray-700">
+			{username && <span className="text-base font-bold select-none">👋 Hi {username}!</span>}
 			<button
 				onClick={onLogout}
 				disabled={loading}
-				className="underline hover:text-gray-900 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
+				className="text-sm underline hover:text-gray-900 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
 				title="Logout"
 			>
 				LOG OUT

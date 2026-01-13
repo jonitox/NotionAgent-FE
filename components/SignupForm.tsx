@@ -29,8 +29,9 @@ export default function SignupForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (form.password !== form.confirmPassword) {
-      alert("Passwords do not match.");
+      setError("Passwords do not match.");
       return;
     }
 
@@ -52,8 +53,8 @@ export default function SignupForm() {
         confirmPassword: "",
       });
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "An error occurred during sign up.";
-      setError(errorMessage);
+      console.error('Sign up error:', err);
+      setError("An error occurred during sign up. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -89,6 +90,8 @@ export default function SignupForm() {
             value={form.username}
             onChange={handleChange}
             placeholder="username"
+            minLength={3}
+            maxLength={50}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
             required
             disabled={loading}
@@ -102,6 +105,8 @@ export default function SignupForm() {
             value={form.password}
             onChange={handleChange}
             placeholder="••••••••"
+            minLength={8}
+            maxLength={72}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
             required
             disabled={loading}
@@ -125,7 +130,7 @@ export default function SignupForm() {
           className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
           disabled={loading}
         >
-          {loading ? "회원가입 중..." : "Sign up"}
+          {loading ? "Signing up..." : "Sign up"}
         </button>
       </form>
     </div>
