@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import ChatBox from '@/components/ChatBox'
 import SettingsModal from '@/components/SettingsModal'
 import { api } from '@/lib/api'
-import type { AuthResponse } from '@/lib/types'
+import type { AuthResponse, UserSettingsResponse } from '@/lib/types'
 
 type Settings = {
 	openaiApiKey: string
@@ -25,10 +25,19 @@ export default function ChatPage() {
 	const [logoutLoading, setLogoutLoading] = useState(false)
 
 	useEffect(() => {
-		const saved = localStorage.getItem('notionAgentSettings') // TODO: call BE API
-		if (saved) {
-			const parsedSettings = JSON.parse(saved)
-			setSettings(parsedSettings)
+		const fetchSettings = async () => {
+			try {
+				const data = await api.get<UserSettingsResponse>('/api/v1/settings/')
+				if (data) {
+					setSettings({
+						openaiApiKey: data.openai_api_key || '',
+						notionApiKey: data.notion_api_key || '',
+						notionPageId: data.notion_page_id || '',
+					})
+				}
+			} catch (err) {
+				console.error('Failed to fetch settings', err)
+			}
 		}
 
 		const fetchMe = async () => {
@@ -41,6 +50,7 @@ export default function ChatPage() {
 			}
 		}
 
+		fetchSettings()
 		fetchMe()
 	}, [router])
 
@@ -52,10 +62,19 @@ export default function ChatPage() {
 		setShowModal(false)
 	}
 
-	const handleSaveSettings = (next: Settings) => {
-		setSettings(next)
-		localStorage.setItem('notionAgentSettings', JSON.stringify(next)) // TODO: call BE API
-		setShowModal(false)
+	const handleSaveSettings = async (next: Settings) => {
+		try {
+			await api.post<UserSettingsResponse>('/api/v1/settings/', {
+				openai_api_key: next.openaiApiKey,
+				notion_api_key: next.notionApiKey,
+				notion_page_id: next.notionPageId,
+			})
+			setSettings(next)
+			setShowModal(false)
+		} catch (err) {
+			console.error('Failed to save settings', err)
+			alert('설정 저장에 실패했습니다.')
+		}
 	}
 
 	const handleLogout = async () => {

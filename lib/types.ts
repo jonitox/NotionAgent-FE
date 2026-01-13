@@ -20,3 +20,16 @@ export type LoginResponse = {
   token_type: string;
   user_id: string;
 };
+
+export type AuthResponse = SignupResponse;
+
+/**
+ * Settings API Response
+ */
+export type UserSettingsResponse = {
+  id: number;
+  user_id: number;
+  openai_api_key: string | null;
+  notion_api_key: string | null;
+  notion_page_id: string | null;
+};
