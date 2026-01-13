@@ -2,6 +2,8 @@
 
 import type { FormEvent } from 'react'
 import { useState, useEffect, useRef } from 'react'
+import { api } from '@/lib/api'
+import type { ChatResponse } from '@/lib/types'
 
 type Message = {
 	id: number
@@ -40,15 +42,7 @@ export default function ChatBox({ onOpenSettings }: { onOpenSettings: () => void
 		])
 
 		// Call chat API
-		const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-		fetch(`${apiUrl}/api/v1/chat/`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ message: text }),
-		})
-			.then((res) => res.json())
+		api.post<ChatResponse>('/api/v1/chat/', { message: text, thread_id: '1' })
 			.then((data) => {
 				setMessages((prev) =>
 					prev.map((msg) =>
