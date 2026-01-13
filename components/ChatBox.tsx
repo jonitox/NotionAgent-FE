@@ -23,7 +23,7 @@ export default function ChatBox({ onOpenSettings }: { onOpenSettings: () => void
 	useEffect(() => {
 		const fetchChatHistory = async () => {
 			try {
-				const history = await api.get<ChatHistoryResponse>('/api/v1/chat/history?thread_id=1&limit=50')
+				const history = await api.get<ChatHistoryResponse>('/api/v1/chat/history')
 				if (history.messages && history.messages.length > 0) {
 					const loadedMessages: Message[] = history.messages.map((msg, index) => ({
 						id: index,

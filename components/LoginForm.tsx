@@ -82,7 +82,7 @@ export default function LoginForm() {
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
           disabled={loading}
         >
-          {loading ? "로그인 중..." : "Login"}
+          {loading ? "logging in..." : "Login"}
         </button>
       </form>
     </div>
