@@ -62,7 +62,7 @@ export default function ChatBox({ onOpenSettings }: { onOpenSettings: () => void
 		])
 
 		// Call chat API
-		api.post<ChatResponse>('/api/v1/chat/', { message: text, thread_id: '1' })
+		api.post<ChatResponse>('/api/v1/chat/', { message: text, thread_id: 'default' })
 			.then((data) => {
 				setMessages((prev) =>
 					prev.map((msg) =>
